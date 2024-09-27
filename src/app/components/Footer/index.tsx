@@ -16,7 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { BiMailSend } from "react-icons/bi";
-import { FiFacebook, FiInstagram, FiYoutube } from "react-icons/fi";
+import { FiFacebook, FiInstagram, FiLinkedin, } from "react-icons/fi";
 
 const Logo = (props: any) => {
   return (
@@ -49,6 +49,7 @@ const SocialButton = ({
       cursor={"pointer"}
       as={"a"}
       href={href}
+      target="_blank"
       display={"inline-flex"}
       alignItems={"center"}
       justifyContent={"center"}
@@ -91,13 +92,13 @@ export default function Footer() {
               {"Disclaimer : 'QR Code' is a registered trademark of DENSO WAVE INCORPORATED."}
             </Text>
             <Stack direction={"row"} spacing={6}>
-              <SocialButton label={"Twitter"} href={"#"}>
+              <SocialButton label={"Facebook"} href={"https://www.facebook.com/profile.php?id=61557434137850"}>
                 <FiFacebook size={20} color="#F56565" />
               </SocialButton>
-              <SocialButton label={"YouTube"} href={"#"}>
-                <FiYoutube size={20} color="#F56565" />
+              <SocialButton label={"LinkedIn"} href={"https://www.linkedin.com/company/102244827"}>
+                <FiLinkedin size={20} color="#F56565" />
               </SocialButton>
-              <SocialButton label={"Instagram"} href={"#"}>
+              <SocialButton label={"Instagram"} href={"https://www.instagram.com/cumin.qr/"}>
                 <FiInstagram size={20} color="#F56565" />
               </SocialButton>
             </Stack>

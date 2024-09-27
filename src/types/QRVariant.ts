@@ -1,4 +1,4 @@
 export type QRVariant = {
-  value: string;
+  value: any ;
   setValue: (data: any) => void;
 };

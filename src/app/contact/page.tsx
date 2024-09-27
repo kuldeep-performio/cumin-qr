@@ -18,9 +18,9 @@ import {
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react'
-import { Metadata } from 'next'
+
 // import { useRef, useState } from 'react'
-import { BsFacebook, BsGithub, BsLinkedin, BsPerson, BsTwitter } from 'react-icons/bs'
+import { BsFacebook, BsInstagram, BsLinkedin, BsPerson, } from 'react-icons/bs'
 import { MdEmail, MdOutlineEmail } from 'react-icons/md'
 // import emailjs from '@emailjs/browser';
 
@@ -113,9 +113,9 @@ export default function ContactFormWithSocialButtons() {
                   />
                 </Tooltip>
 
-                <Box as="a" href="#">
+                <Box as="a" href="https://www.facebook.com/profile.php?id=61557434137850">
                   <IconButton
-                    aria-label="github"
+                    aria-label="facebook"
                     variant="ghost"
                     size="lg"
                     fontSize="3xl"
@@ -128,12 +128,12 @@ export default function ContactFormWithSocialButtons() {
                   />
                 </Box>
 
-                <Box as="a" href="#">
+                <Box as="a" href="https://www.instagram.com/cumin.qr/">
                   <IconButton
-                    aria-label="twitter"
+                    aria-label="instagram"
                     variant="ghost"
                     size="lg"
-                    icon={<BsTwitter size="28px" />}
+                    icon={<BsInstagram size="28px" />}
                     _hover={{
                       bg: 'blue.500',
                       color: useColorModeValue('white', 'gray.700'),

@@ -1,3 +1,4 @@
+import { defaultVCardData } from "@/data/common";
 import { QRVariant } from "@/types/QRVariant";
 import {
   Box,
@@ -6,21 +7,11 @@ import {
   HStack,
   Input,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 
 export default function QRvCard({ value, setValue }: QRVariant) {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    organization: "",
-    phone: "",
-    email: "",
-    address: "",
-    title: "",
-    website: "",
-    birthday: "",
-  });
+  const [formData, setFormData] = useState(defaultVCardData);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -28,7 +19,7 @@ export default function QRvCard({ value, setValue }: QRVariant) {
     const { name, value } = e.target;
     const newData = { ...formData, [name]: value };
     const dataTosend = `BEGIN:VCARD\nVERSION:4.0\nFN:${newData.firstName} ${newData.lastName}\nORG:${newData.organization}\nTEL;TYPE=work,voice:${newData.phone}\nEMAIL:${newData.email}\nADR:${newData.address}\nTITLE:${newData.title}\nURL:${newData.website}\nBDAY:${newData.birthday}\nEND:VCARD`;
-    setValue({ value: dataTosend });
+    setValue({ value: dataTosend,  formData : newData  });
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
@@ -56,6 +47,12 @@ export default function QRvCard({ value, setValue }: QRVariant) {
   //   useEffect(() => {
   //     setValue({ value: generateVCard() });
   //   }, [formData])
+
+  useEffect(() => {
+    // setFormData(value && Object.keys(value).length > 0 ? value.formData : defaultVCardData);
+    setFormData(Object.assign({}, defaultVCardData, value.formData));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <FormControl>

@@ -1,7 +1,26 @@
 import { QRVariant } from "@/types/QRVariant";
 import { Box, FormControl, FormLabel, Input, Text } from "@chakra-ui/react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export default function QRRating({ value, setValue }: QRVariant) {
+
+  const [formData, setFormData] = useState({ value : '' });
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    const newData = { ...formData, [name]: value };
+    setValue({ value: value, formData: newData });
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  useEffect(() => {
+    // setFormData(value && Object?.keys(value).length > 0 ? value.formData : defaultEmailData);
+    setFormData(Object.assign({}, {value : ''}, value.formData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <FormControl>
@@ -9,13 +28,13 @@ export default function QRRating({ value, setValue }: QRVariant) {
           Google Reviews Link
         </FormLabel>
         <Input
-          value={value}
+          value={formData.value}
           placeholder="https://g.page/your-business/review?rc"
-          onChange={(e) => setValue({ value: e.target.value })}
+          onChange={handleChange}
         />
       </FormControl>
       <Box mt={2} width={"full"} bg={"gray.100"} p={4}>
-        <Text pl={4} fontSize={'16px'}>
+        <Text as='div' pl={4} fontSize={'16px'}>
           <ol>
             <li>
               Log into your{" "}

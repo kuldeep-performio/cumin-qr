@@ -16,13 +16,14 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import RenderQR from "../RenderQR";
-import { Suspense, useEffect, useState } from "react";
-import { TypeCompnent } from "../QRContent";
+import { useEffect, useState } from "react";
+import { TypeComponent } from "../QRContent";
 import QRStyles from "../QRStyles";
-import { HeroQrType, useHeroQr } from "@/store/heroQr";
 import Link from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { QRTypeProp } from "@/app/qr-types/page";
+import { QRConfigData } from "@/types/qrTypes";
+import { defaultQrData } from "@/data/common";
 
 interface Props {
   children: React.ReactNode;
@@ -213,16 +214,60 @@ export function QRTypesComponent({
   );
 }
 
+const ConfigComp = ({
+  selectedQRType,
+  handleQrData,
+  qrData,
+}: {
+  selectedQRType: any;
+  handleQrData: (data: any) => void;
+  qrData: QRConfigData;
+}) => {
+  return (
+    <Stack
+      spacing={{ base: 8, md: 10 }}
+      py={{ base: 4, md: 6 }}
+      direction={{ base: "column", md: "row" }}
+    >
+      <Box flex="4">
+        <Box
+          p={5}
+          borderWidth="1px"
+          borderColor={"gray.200"}
+          borderRadius={"xl"}
+          mt={4}
+        >
+          <VStack gap={4}>
+            <TypeComponent
+              type={selectedQRType?.value}
+              handleQrData={handleQrData}
+              formData={qrData}
+            />
+            <Divider />
+            <QRStyles handleQrData={handleQrData} qrData={qrData} />
+          </VStack>
+        </Box>
+      </Box>
+      <Box flex="3" mt={4} position={"sticky"} top={20}>
+        <RenderQR qrData={qrData} />
+      </Box>
+    </Stack>
+  );
+};
+
 export default function HeroQR({
   qrTypesMain,
   hero,
   type,
+  handleQrData,
+  qrData,
 }: {
   qrTypesMain: QRTypeProp[];
   hero?: boolean;
   type?: string;
+  handleQrData: (data: any) => void;
+  qrData: QRConfigData;
 }) {
-  const { setQr, setDefault } = useHeroQr() as HeroQrType;
   const [selectedQRType, setSelectedQRType] = useState<QRTypeProp | null>(null);
 
   useEffect(() => {
@@ -240,44 +285,23 @@ export default function HeroQR({
 
   const handleSelectType = (type: QRTypeProp) => {
     setSelectedQRType(type);
-    setDefault();
+    handleQrData(defaultQrData as QRConfigData);
   };
 
   return (
     <Container maxW={"7xl"}>
-      <Suspense fallback={<p>Loading feed...</p>}>
-        <QRTypesComponent
-          qrTypesMain={qrTypesMain as typeProp[]}
-          handleSelectType={handleSelectType}
-          selectedQRType={selectedQRType as typeProp | null}
-          hero={hero}
-          type={type}
-        />
-      </Suspense>
-      <Stack
-        spacing={{ base: 8, md: 10 }}
-        py={{ base: 4, md: 6 }}
-        direction={{ base: "column", md: "row" }}
-      >
-        <Box flex="4">
-          <Box
-            p={5}
-            borderWidth="1px"
-            borderColor={"gray.200"}
-            borderRadius={"xl"}
-            mt={4}
-          >
-            <VStack gap={4}>
-              <TypeCompnent type={selectedQRType?.value} />
-              <Divider />
-              <QRStyles />
-            </VStack>
-          </Box>
-        </Box>
-        <Box flex="3" mt={4} position={"sticky"} top={20}>
-          <RenderQR />
-        </Box>
-      </Stack>
+      <QRTypesComponent
+        qrTypesMain={qrTypesMain as typeProp[]}
+        handleSelectType={handleSelectType}
+        selectedQRType={selectedQRType as typeProp | null}
+        hero={hero}
+        type={type}
+      />
+      <ConfigComp
+        selectedQRType={selectedQRType}
+        handleQrData={handleQrData}
+        qrData={qrData}
+      />
     </Container>
   );
 }

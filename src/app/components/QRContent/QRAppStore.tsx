@@ -7,26 +7,38 @@ import {
   RadioGroup,
   Stack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function QRAppStore({ value, setValue }: QRVariant) {
-  const [selected, setSelected] = useState("playStore");
+
+  const [formData, setFormData] = useState({ value : '', type : 'playStore' });
 
   const handleChange = (value: string) => {
-    setSelected(value);
-    setValue({ value: "" });
+    setFormData({ value: "", type: value });
   };
+
+  const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {value} = e.target;
+    const newData = { ...formData, value: value };
+    setValue({ value: value, formData: newData });
+    setFormData((prevData) => ({ ...prevData, value: value }));  
+  }
+  
+  useEffect(() => {
+    setFormData(Object.assign({}, { value : '', type : 'playStore' }, value.formData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Stack direction={"column"} width={"full"}>
-      <RadioGroup onChange={handleChange} value={selected}>
+      <RadioGroup onChange={handleChange} value={formData.type}>
         <Stack direction="row">
           <Radio value="playStore">Google play store</Radio>
           <Radio value="appStore">Apple app store</Radio>
         </Stack>
       </RadioGroup>
       <Box mt={2} width={"full"}>
-        {selected === "playStore" ? (
+        {formData.type === "playStore" ? (
           <>
             <FormLabel htmlFor="playStore" fontWeight={"semibold"}>
               Play store url
@@ -34,8 +46,8 @@ export default function QRAppStore({ value, setValue }: QRVariant) {
             <Input
               placeholder="https://play.google.com/store/apps/details?id=com.example.app"
               name="playStore"
-              value={value}
-              onChange={(e) => setValue({ value: e.target.value })}
+              value={formData.value}
+              onChange={handleChangeValue}
             />
           </>
         ) : (
@@ -46,8 +58,8 @@ export default function QRAppStore({ value, setValue }: QRVariant) {
             <Input
               placeholder="https://apps.apple.com/us/app/your-app/id284882215"
               name="appStore"
-              value={value}
-              onChange={(e) => setValue({ value: e.target.value })}
+              value={formData.value}
+              onChange={handleChangeValue}
             />
           </>
         )}

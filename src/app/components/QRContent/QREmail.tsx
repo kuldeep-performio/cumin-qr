@@ -1,33 +1,37 @@
+import { defaultEmailData } from "@/data/common";
 import { QRVariant } from "@/types/QRVariant";
 import { FormControl, FormLabel, Input, Textarea } from "@chakra-ui/react";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 
 export default function QREmail({ value, setValue }: QRVariant) {
-  const [formData, setFormData] = useState({
-    email: "",
-    subject: "",
-    message: "",
-  });
+  const [formData, setFormData] = useState(defaultEmailData);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     const newData = { ...formData, [name]: value };
-    const dataTosend = `mailto:${newData.email}?subject=${encodeURIComponent(newData.subject)}&body=${encodeURIComponent(newData.message)}`;
-    setValue({ value: dataTosend });
+    const dataToSend = `mailto:${newData.email}?subject=${encodeURIComponent(
+      newData.subject
+    )}&body=${encodeURIComponent(newData.message)}`;
+    setValue({ value: dataToSend, formData: newData });
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  useEffect(() => {
+    setFormData(Object.assign({}, defaultEmailData, value.formData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <FormControl>
       <FormLabel htmlFor="email" fontWeight={"semibold"}>
-        Email adddress
+        Email address
       </FormLabel>
       <Input
         name="email"
         placeholder="abcdef@abc.com"
-        value={formData.email}
+        value={formData?.email}
         onChange={handleChange}
       />
       <FormLabel mt={4} htmlFor="subject" fontWeight={"semibold"}>
@@ -35,8 +39,8 @@ export default function QREmail({ value, setValue }: QRVariant) {
       </FormLabel>
       <Input
         name="subject"
-        placeholder="subject"             
-        value={formData.subject}
+        placeholder="subject"
+        value={formData?.subject}
         onChange={handleChange}
       />
       <FormLabel mt={4} htmlFor="message" fontWeight={"semibold"}>
@@ -46,7 +50,7 @@ export default function QREmail({ value, setValue }: QRVariant) {
         rows={3}
         name="message"
         placeholder="message"
-        value={formData.message}
+        value={formData?.message}
         onChange={handleChange}
       />
     </FormControl>

@@ -1,3 +1,4 @@
+import { defaultEventData } from "@/data/common";
 import { QRVariant } from "@/types/QRVariant";
 import {
   Box,
@@ -8,18 +9,10 @@ import {
   Select,
   Textarea,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export default function QREvent({ value, setValue }: QRVariant) {
-  const [formData, setFormData] = useState({
-    summary: "",
-    startDate: "",
-    endDate: "",
-    location: "",
-    url: "",
-    description: "",
-    timezone: "Africa/Abidjan",
-  });
+  const [formData, setFormData] = useState(defaultEventData);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -27,9 +20,15 @@ export default function QREvent({ value, setValue }: QRVariant) {
     const { name, value } = e.target;
     const newData = { ...formData, [name]: value };
     const dataTosend = createEvent(newData);
-    setValue({ value: dataTosend });
+    setValue({ value: dataTosend, formData: newData});
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+
+  useEffect(() => {
+    setFormData(Object.assign({}, defaultEventData, value.formData));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const timezones = Intl.supportedValuesOf("timeZone");
 

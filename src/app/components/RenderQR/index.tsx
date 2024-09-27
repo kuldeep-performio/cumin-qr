@@ -11,27 +11,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { QRCode } from "../QRCodeGenerator";
-import { HeroQrType, useHeroQr } from "@/store/heroQr";
 import Image from "next/image";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { QRConfigData } from "@/types/qrTypes";
 
-export default function RenderQR() {
-  const {
-    value,
-    quietZone,
-    size,
-    eyeColor,
-    eyeRadius,
-    qrStyle,
-    fgColor,
-    bgColor,
-    ecLevel,
-    logoImage,
-    logoPaddingStyle,
-    logoPadding,
-    logoHeight,
-    logoWidth,
-  } = useHeroQr() as HeroQrType;
+export default function RenderQR({ qrData }: { qrData: QRConfigData }) {
+  const { value } = qrData;
 
   // const handleDownload = () => {
   // 	html2canvas(document.querySelector('#react-qrcode-logo') as any)
@@ -53,8 +38,8 @@ export default function RenderQR() {
       link.download = `your-qr.${type}`;
       link.href = url;
       link.click();
-    }  else {
-      alert ("Please generate a QR code first")
+    } else {
+      alert("Please generate a QR code first");
     }
   }
 
@@ -89,22 +74,7 @@ export default function RenderQR() {
     >
       <Box>
         {value ? (
-          <QRCode
-            value={value}
-            quietZone={quietZone}
-            size={size}
-            eyeColor={eyeColor}
-            eyeRadius={eyeRadius}
-            qrStyle={qrStyle}
-            fgColor={fgColor}
-            bgColor={bgColor}
-            ecLevel={ecLevel}
-            logoImage={logoImage}
-            logoPaddingStyle={logoPaddingStyle}
-            logoPadding={logoPadding}
-            logoHeight={logoHeight}
-            logoWidth={logoWidth}
-          />
+          <QRCode {...qrData} />
         ) : (
           <Box borderRadius={"lg"} borderWidth={"1px"} p={8}>
             <Image
@@ -116,16 +86,12 @@ export default function RenderQR() {
           </Box>
         )}
       </Box>
-      <HStack  spacing={8} alignItems={"center"}>
+      <HStack spacing={8} alignItems={"center"}>
         <Menu>
-          <MenuButton
-            as={Button}
-            rightIcon={<ChevronDownIcon />}
-            width={60}
-          >
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />} width={60}>
             Download
           </MenuButton>
-          <MenuList bg={'white'} zIndex={99}>
+          <MenuList bg={"white"} zIndex={99}>
             <MenuItem onClick={() => download({ type: "png" })}>
               Download as PNG
             </MenuItem>

@@ -1,9 +1,11 @@
 import { QRVariant } from "@/types/QRVariant";
 import { FormControl, FormLabel, Textarea } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 
-export default function QRText({ value, setValue }: QRVariant) {
+export default function QRText({ value, setValue, styles }: QRVariant & {styles ? : boolean}) {
+
+  const [formData, setFormData] = useState({ value : '' });
 
   // const [debouncedInputValue, setDebouncedInputValue] = React.useState("");
 
@@ -19,8 +21,17 @@ export default function QRText({ value, setValue }: QRVariant) {
   // }, [inputValue, 500]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setValue({ value : e.target.value });
+    const {value} = e.target;
+    const newData = { ...formData, value: value };
+    setValue({ value: value, formData: newData });
+    setFormData((prevData) => ({ ...prevData, value: value }));  
   }
+  
+  useEffect(() => {
+    // setFormData(value && Object?.keys(value).length > 0 ? value.formData : { value : '' });
+    setFormData(Object.assign({}, { value : '' }, value.formData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 //   const _changeText(newText:string) {
 //     setValue(newText)
@@ -36,10 +47,11 @@ export default function QRText({ value, setValue }: QRVariant) {
       <Textarea
         placeholder="Type here..."
         rows={3}
+        isDisabled={styles}
         name="qr-text"
         shadow="sm"
         focusBorderColor="brand.400"
-        value={value}
+        value={formData.value}
         onChange={handleChange}
       />
     </FormControl>

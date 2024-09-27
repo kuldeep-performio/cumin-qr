@@ -1,13 +1,10 @@
+import { defaultWifiData } from "@/data/common";
 import { QRVariant } from "@/types/QRVariant";
 import { FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export default function QRWifi({ value, setValue }: QRVariant) {
-  const [formData, setFormData] = useState({
-    name: "",
-    encryption: "WEP",
-    password: "",
-  });
+  const [formData, setFormData] = useState(defaultWifiData);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -20,9 +17,16 @@ export default function QRWifi({ value, setValue }: QRVariant) {
     } else {
       `WIFI:S:${newData.name};T:${newData.encryption};`;
     }
-    setValue({ value: dataTosend });
+    setValue({ value: dataTosend, formData: newData});
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  useEffect(() => {
+    // setFormData(value && Object.keys(value).length > 0 ? value.formData : defaultWifiData);
+    setFormData(Object.assign({}, defaultWifiData, value.formData));
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <FormControl>

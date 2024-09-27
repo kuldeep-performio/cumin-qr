@@ -4,8 +4,13 @@ import QRBranding from "./QRBranding";
 import QREyes from "./QREyes";
 import QRPattern from "./QRPattern";
 import QROthers from "./QROthers";
-import { HeroQrType, useHeroQr } from "@/store/heroQr";
-import { PiAirTrafficControl, PiExclude, PiQrCodeDuotone, PiRugFill } from "react-icons/pi";
+import {
+  PiAirTrafficControl,
+  PiExclude,
+  PiQrCodeDuotone,
+  PiRugFill,
+} from "react-icons/pi";
+import { QRConfigData } from "@/types/qrTypes";
 
 interface Props {
   children: React.ReactNode;
@@ -52,8 +57,27 @@ const StyleTypeBox = ({ active, children, onClick }: Props) => {
   );
 };
 
-export default function QRStyles() {
-  const { eyeColor, eyeRadius, fgColor, qrStyle, logoPadding, logoHeight, logoWidth, bgColor, quietZone, ecLevel, logoPaddingStyle, setQr, logoImage } = useHeroQr() as HeroQrType;
+export default function QRStyles({
+  handleQrData,
+  qrData,
+}: {
+  handleQrData: (data: any) => void;
+  qrData: QRConfigData;
+}) {
+  const {
+    eyeColor,
+    eyeRadius,
+    fgColor,
+    qrStyle,
+    logoPadding,
+    logoHeight,
+    logoWidth,
+    bgColor,
+    quietZone,
+    ecLevel,
+    logoPaddingStyle,
+    logoImage,
+  } = qrData;
 
   const styleTypes = [
     {
@@ -86,7 +110,12 @@ export default function QRStyles() {
 
   return (
     <Box width={"full"}>
-      <HStack gap={5} flexWrap={'wrap'} width={"full"} alignItems={"flex-start"}>
+      <HStack
+        gap={5}
+        flexWrap={"wrap"}
+        width={"full"}
+        alignItems={"flex-start"}
+      >
         {styleTypes.map((styleType) => (
           <StyleTypeBox
             key={styleType.name}
@@ -120,14 +149,36 @@ export default function QRStyles() {
         ))}
       </HStack>
       {activeStyle.name === "Brand" && (
-        <QRBranding logoPaddingStyle={logoPaddingStyle} logoPadding={logoPadding} logoHeight={logoHeight} logoWidth={logoWidth} setValue={setQr} logoImage={logoImage} />
+        <QRBranding
+          logoPaddingStyle={logoPaddingStyle}
+          logoPadding={logoPadding}
+          logoHeight={logoHeight}
+          logoWidth={logoWidth}
+          setValue={handleQrData}
+          logoImage={logoImage}
+        />
       )}
-      {activeStyle.name === "Eyes" && <QREyes eyeRadius={eyeRadius} eyeColor={eyeColor} setValue={setQr} />}
+      {activeStyle.name === "Eyes" && (
+        <QREyes
+          eyeRadius={eyeRadius}
+          eyeColor={eyeColor}
+          setValue={handleQrData}
+        />
+      )}
       {activeStyle.name === "Pattern" && (
-        <QRPattern qrStyle={qrStyle} fgColor={fgColor} setValue={setQr} />
+        <QRPattern
+          qrStyle={qrStyle}
+          fgColor={fgColor}
+          setValue={handleQrData}
+        />
       )}
       {activeStyle.name === "Others" && (
-        <QROthers bgColor={bgColor} quietZone={quietZone} ecLevel={ecLevel} setValue={setQr} />
+        <QROthers
+          bgColor={bgColor}
+          quietZone={quietZone}
+          ecLevel={ecLevel}
+          setValue={handleQrData}
+        />
       )}
     </Box>
   );

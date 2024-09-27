@@ -14,25 +14,42 @@ import {
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface Props {
   children: React.ReactNode;
 }
 
 const Links = [
-{
-  label : 'Genarate QR Code',
-  href : 'qr/text'
-},
-{
-  label : 'All QR Types', 
-  href : 'qr-types'
-}, 
-{
-  label : 'Blogs',
-  href : 'blogs'
-}
+  {
+    label: "Generate QR Code",
+    href: "qr/text",
+    active: ["/qr/"],
+  },
+  {
+    label: "All QR Types",
+    href: "qr-types",
+    active: ["/qr-types"],
+  },
+  {
+    label: "Blogs",
+    href: "blogs",
+    active: ["/blogs"],
+  },
 ];
+
+const dashboardLink = {
+  label: "Dashboard",
+  href: "admin/dashboard",
+  active: ["/admin/dashboard"],
+};
+
+const authLink = {
+  label: "Login/Register",
+  href: "auth/register",
+  active: ["/auth/register", "/auth/login"],
+};
 
 const NavLink = (props: Props) => {
   const { children } = props;
@@ -54,8 +71,24 @@ const NavLink = (props: Props) => {
   );
 };
 
-export default function NavBar() {
+export default function NavBar({ user }: { user: any }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const pathname = usePathname();
+  const [links, setLinks] = useState(Links);
+
+  const activeLink = (href: any) => {
+    if (href.includes(pathname) || pathname.includes(href)) {
+      return true;
+    }
+  };
+
+  useEffect(() => {
+    if (!user) {
+      setLinks([...links, authLink]);
+    } else {
+      setLinks([...links, dashboardLink ]);
+    }
+  }, []);
 
   return (
     <>
@@ -83,13 +116,17 @@ export default function NavBar() {
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >
-              {Links.map((link) => (
+              {links.map((link) => (
                 <Link href={`/${link.href}`} key={link.href}>
                   <Text
                     px={4}
                     py={2}
                     borderRadius={"lg"}
                     _hover={{ color: "red.400", backgroundColor: "gray.200" }}
+                    backgroundColor={
+                      activeLink(link.active) ? "gray.200" : "transparent"
+                    }
+                    color={activeLink(link.active) ? "red.500" : "black"}
                     onClick={onClose}
                   >
                     {link.label}
@@ -133,8 +170,8 @@ export default function NavBar() {
 
           {isOpen ? (
             <Box pb={8} display={{ md: "none" }}>
-              <Stack  as={"nav"} spacing={4}>
-                {Links.map((link) => (
+              <Stack as={"nav"} spacing={4}>
+                {links.map((link) => (
                   <Link href={`/${link.href}`} key={link.href}>
                     <Text
                       px={4}
@@ -142,6 +179,10 @@ export default function NavBar() {
                       borderRadius={"lg"}
                       _hover={{ color: "red.400", backgroundColor: "gray.200" }}
                       onClick={onClose}
+                      backgroundColor={
+                        activeLink(link.active) ? "gray.200" : "transparent"
+                      }
+                      color={activeLink(link.active) ? "red.500" : "black"}
                     >
                       {link.label}
                     </Text>

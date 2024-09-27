@@ -1,12 +1,10 @@
+import { defaultLocationData } from "@/data/common";
 import { QRVariant } from "@/types/QRVariant";
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export default function QRLocation({ value, setValue }: QRVariant) {
-  const [formData, setFormData] = useState({
-    latitude: "",
-    longitude: "",
-  });
+  const [formData, setFormData] = useState(defaultLocationData);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -14,9 +12,15 @@ export default function QRLocation({ value, setValue }: QRVariant) {
     const { name, value } = e.target;
     const newData = { ...formData, [name]: value };
     const dataTosend = `geo:${newData.latitude},${newData.longitude}`;
-    setValue({ value: dataTosend });
+    setValue({ value: dataTosend,  formData : newData  });
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  useEffect(() => {
+    // setFormData(value && Object.keys(value).length > 0 ? value.formData : defaultLocationData);
+    setFormData(Object.assign({}, defaultLocationData, value.formData));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <FormControl>

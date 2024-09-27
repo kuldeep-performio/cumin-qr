@@ -7,7 +7,7 @@ import {
   RadioGroup,
   Stack,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 type Props = {
   value: string;
@@ -40,28 +40,18 @@ const SocialInput = ({
 };
 
 export default function QRSocial({ value, setValue }: QRVariant) {
-  const [selected, setSelected] = useState("facebook");
-  const emptyObj = {
-    facebook: "",
-    twitter: "",
-    instagram: "",
-    linkedIn: "",
-    youTube: "",
-  };
-  const [socialValues, setSocialValues] = useState(emptyObj);
+
+  const [formData, setFormData] = useState({ value : '', type : 'facebook' });
 
   const handleChange = (value: string) => {
-    setSelected(value);
-    setValue({ value: "" });
-    setSocialValues(emptyObj);
+    setFormData({ value: "", type: value });
+    setValue({ value: "", formData: { value: "", type: value } });
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
-    setSocialValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
+    const newData = { ...formData, value };
+    const selected = formData.type;
     let dataToSend;
     if (selected === "facebook") {
       dataToSend = `https://www.facebook.com/${value}`;
@@ -73,14 +63,22 @@ export default function QRSocial({ value, setValue }: QRVariant) {
       dataToSend = `https://www.linkedin.com/in/${value}`;
     } else if (selected === "youTube") {
       dataToSend = `https://www.youtube.com/user/${value}`;
+    } else {
+      dataToSend = "";
     }
-    setValue({ value: dataToSend });
+    setValue({ value: dataToSend, formData: newData });
+    setFormData((prevData) => ({ ...prevData, value: value }));  
   };
+
+  useEffect(() => {
+    setFormData(Object.assign({}, { value : '', type : 'facebook' }, value.formData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Stack direction={"column"} width={"full"}>
-      <RadioGroup onChange={handleChange} value={selected}>
-        <Stack direction="row" flexWrap={'wrap'}>
+      <RadioGroup onChange={handleChange} value={formData.type}>
+        <Stack direction="row" flexWrap={"wrap"}>
           <Radio value="facebook">Facebook</Radio>
           <Radio value="twitter">Twitter</Radio>
           <Radio value="instagram">Instagram</Radio>
@@ -89,41 +87,41 @@ export default function QRSocial({ value, setValue }: QRVariant) {
         </Stack>
       </RadioGroup>
       <Box mt={2} width={"full"}>
-        {selected === "facebook" ? (
+        {formData.type === "facebook" ? (
           <SocialInput
-            value={socialValues.facebook}
+            value={formData.value}
             handleChange={handleInputChange}
             name="facebook"
             label="Facebook username"
             placeHolder="abcdef"
           />
-        ) : selected === "twitter" ? (
+        ) : formData.type === "twitter" ? (
           <SocialInput
-            value={socialValues.twitter}
+            value={formData.value}
             handleChange={handleInputChange}
             name="twitter"
             label="Twitter username"
             placeHolder="abcdef"
           />
-        ) : selected === "instagram" ? (
+        ) : formData.type === "instagram" ? (
           <SocialInput
-            value={socialValues.instagram}
+            value={formData.value}
             handleChange={handleInputChange}
             name="instagram"
             label="Instagram username"
             placeHolder="abcdef"
           />
-        ) : selected === "linkedIn" ? (
+        ) : formData.type === "linkedIn" ? (
           <SocialInput
-            value={socialValues.linkedIn}
+            value={formData.value}
             handleChange={handleInputChange}
             name="linkedIn"
             label="LinkedIn username"
             placeHolder="abcdef"
           />
-        ) : selected === "youTube" ? (
+        ) : formData.type === "youTube" ? (
           <SocialInput
-            value={socialValues.youTube}
+            value={formData.value}
             handleChange={handleInputChange}
             name="youTube"
             label="YouTube username"

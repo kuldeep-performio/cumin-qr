@@ -1,12 +1,10 @@
+import { defaultWhatsAppData } from "@/data/common";
 import { QRVariant } from "@/types/QRVariant";
 import { FormControl, FormLabel, Input, Textarea } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export default function QRWhatsApp({ value, setValue }: QRVariant) {
-  const [formData, setFormData] = useState({
-    phone: "",
-    message: "",
-  });
+  const [formData, setFormData] = useState(defaultWhatsAppData);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -14,9 +12,15 @@ export default function QRWhatsApp({ value, setValue }: QRVariant) {
     const { name, value } = e.target;
     const newData = { ...formData, [name]: value };
     const dataTosend = `https://wa.me/${newData.phone}?text=${encodeURIComponent(newData.message)}`;
-    setValue({ value: dataTosend });
+    setValue({ value: dataTosend, formData: newData});
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+
+  useEffect(() => {
+    setFormData(Object.assign({}, defaultWhatsAppData, value.formData));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <FormControl>

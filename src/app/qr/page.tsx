@@ -1,7 +1,6 @@
-import { QRCodes } from "@/data/QRTypes";
-import HeroQR from "../components/Banner/HeroQRGenerate";
 import { Box, Text } from "@chakra-ui/react";
 import { Metadata } from "next";
+import { QRRenderComponentHero } from "./[type]/RenderQr";
 
 export const metadata: Metadata = {
   title: 'QR Code Generator',
@@ -25,7 +24,7 @@ export default function CreateQR() {
           QR codes
           </Text>
         </Text>
-        <HeroQR qrTypesMain={QRCodes} hero={false} />
+        <QRRenderComponentHero />
       </Box>
     // </Container>
   );
