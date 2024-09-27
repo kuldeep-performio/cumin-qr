@@ -6,7 +6,7 @@ import { getAuth } from 'firebase/auth';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAQQ4EfcFgFnOWIO6xikZ7GaBF6hcjpvWc",
+  apiKey: process.env.PUBLIC_GOOGLE_ANALYTICS,
   authDomain: "cuminqr-d8569.firebaseapp.com",
   projectId: "cuminqr-d8569",
   storageBucket: "cuminqr-d8569.appspot.com",
